@@ -1,0 +1,40 @@
+* {
+  background-color: rgb(217, 240, 232);
+}
+
+.footer {
+  height: 100px;
+}
+
+.app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.machineContainer {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid black;
+}
+
+.noteButton {
+  height: 100px;
+  width: 100px;
+}
+
+.transport {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+}
+
+.{
+
+}
+
+.row {
+  display: flex;
+}
