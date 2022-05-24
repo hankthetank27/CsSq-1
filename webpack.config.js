@@ -6,9 +6,10 @@ module.exports = {
   entry: './client/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
+    //publicPath: '/dist',
     filename: 'bundle.js'
   },
-  mode: 'production',
+  mode: process.env.NODE_ENV,
   module: {
     rules: [
       { 
@@ -27,4 +28,15 @@ module.exports = {
       template: './index.html'
     })
   ],
+  devServer: {
+    static: {
+      directory: path.join(__dirname)
+    },
+    port: 8080, 
+    compress: true,
+    hot: true,
+    proxy: {
+      '/api': 'http://localhost:3000'
+    }
+  }
 };
