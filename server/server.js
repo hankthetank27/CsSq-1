@@ -1,11 +1,20 @@
 const path = require('path');
 const express = require('express');
+const mongoose = require('mongoose');
 
 const app = express();
 
 const apiRouter = require('./routes/api');
 
 const PORT = 3000;
+
+//connect to local mongoDB (DONT FORGET TO SO START MONGO)
+mongoose.connect('mongodb://localhost:27017/',
+{
+  dbName: 'cdSoloProject',
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}, err => err ? console.log(err) : console.log('Connected to database'));
 
 //handle parsing request body
 app.use(express.json());
@@ -17,16 +26,16 @@ if (process.env.NODE_ENV === 'production'){
   app.use(express.static(path.resolve(__dirname, '../dist')));
 }
 
+//loads home endpoint
 app.get('/', (req, res) => {
   return res.status(200).sendFile(path.join(__dirname, '../index.html'));
 });
-
 
 //handles api endpoints
 app.use('/api', apiRouter);
 
 //unknown route handler
-app.use((req, res) => res.status(404).send('This is not the page you\'re looking for...'));
+app.use((req, res) => res.status(404).send('404, page not found :('));
 
 //global error handler
 app.use((err, req, res, next) => {
