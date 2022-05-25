@@ -5,6 +5,7 @@ import Register from "./components/pages/register.jsx";
 import Machine from './components/machine.jsx';
 import './stylesheets/styles.css';
 import * as Tone from 'tone';
+import { set } from 'mongoose';
 
 class App extends Component {
   constructor () {
@@ -20,15 +21,31 @@ class App extends Component {
         pass: '',
         incorrectLogin: ''
       },
-      authUser: ''
+      viewPreset: false,
+      setBpm: '',
+      isPlaying: false
     }
     this.handleChange = this.handleChange.bind(this);
     this.submitLogin = this.submitLogin.bind(this);
     this.loadUserPresets = this.loadUserPresets.bind(this);
+    this.updatePreset = this.updatePreset.bind(this);
+    this.startStop = this.startStop.bind(this); 
+    this.adjustBpm = this.adjustBpm.bind(this);
     this.makeSynths = this.makeSynths.bind(this);
     this.makeGrid = this.makeGrid.bind(this);
     this.configLoop = this.configLoop.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
+  }
+
+  componentDidMount () {
+    this.loadUserPresets();
+
+    this.setState({grid: this.makeGrid(this.state.notes)}, () => {
+      Tone.start().then(() => {
+
+        this.configLoop();
+      })
+    })
   }
 
   handleChange (event) {
@@ -36,12 +53,15 @@ class App extends Component {
     if (id === 'loginUsernameField'){
       const login = {...this.state.login}
       login.username = value;
-      this.setState({login}, () => console.log(this.state))
+      this.setState({login}, () => console.log(this.state));
     } 
     if (id === 'loginPasswordField'){
       const login = {...this.state.login}
       login.pass = value;
-      this.setState({login}, () => console.log(this.state))
+      this.setState({login}, () => console.log(this.state));
+    }
+    if (id === 'setBpm'){
+      this.setState({setBpm: value}, () => console.log(this.state));
     }
   }
 
@@ -69,26 +89,52 @@ class App extends Component {
     return res;
   }
 
-  async loadUserPresets () {
-    const res = await fetch('/api/loadPreset',{
-      method: 'get'
-    })
-    const data = await res.json();
-    this.setState({authUser: data.cookie});
+  async loadUserPresets (event) {
+    if (event) event.preventDefault(); 
+    try {
+      const res = await fetch('/api/loadPreset', {
+        method: 'get'
+      })
+      const data = await res.json();
+      const { bpm, beat, synthCount, notes, grid } = data.preset;
+      this.setState({
+        bpm: bpm,
+        beat: beat,
+        synthCount: synthCount,
+        notes: notes,
+        grid: grid,
+        viewPreset: true 
+      }, () => {
+        console.log('current user preset data', data.preset)
+        console.log('state after loading user preset: ', this.state)
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
-  componentDidMount () {
-    console.log('app mounted')
-
-    this.loadUserPresets();
-
-    this.setState({grid: this.makeGrid(this.state.notes)}, () => {
-      Tone.start().then(() => {
-        const{ grid, synthCount } = this.state;
-        const synths = this.makeSynths(synthCount);
-        this.configLoop(grid, synths);
+  async updatePreset (event) {
+    event.preventDefault();
+    const { bpm, beat, synthCount, notes, grid } = this.state;
+    try {
+      const res = await fetch('/api/updatePreset', {
+        method: 'put',
+        body: JSON.stringify({
+          bpm: bpm,
+          beat: beat,
+          synthCount: synthCount,
+          notes: notes,
+          grid: grid
+        }),
+        headers: {
+          'Content-Type' : 'application/json; charset=UTF-8'
+        }
       })
-    })
+      const data = await res.json();
+      console.log('updateUserPrest respose: ', data);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   makeSynths (count) {
@@ -112,7 +158,9 @@ class App extends Component {
     return rows;
   }
 
-  configLoop (grid, synths) {
+  configLoop () {
+    const{ grid, synthCount, bpm } = this.state;
+    const synths = this.makeSynths(synthCount);
     let beat = this.state.beat;
     const repeat = (time) => {
       grid.forEach((row, index) => {
@@ -126,18 +174,55 @@ class App extends Component {
       beat = (beat + 1) % 8;
       console.log('beat :', beat)
     };
-    Tone.Transport.bpm.value = this.state.bpm;
+    Tone.Transport.bpm.value = bpm;
     Tone.Transport.scheduleRepeat(repeat, "8n");
+  }
+
+  async startStop (event) {
+    event.preventDefault();
+    const { isPlaying } = this.state;
+    if (isPlaying){ 
+      await Tone.Transport.stop();
+      this.setState({isPlaying : false});
+    } else {
+      this.configLoop(); 
+      await Tone.Transport.start()
+      this.setState({isPlaying : true});
+    }
+  }
+
+  adjustBpm () {
+    const { setBpm } = this.state;
+    this.setState({bpm: setBpm}, () => {
+      this.configLoop();
+    });
   }
 
   render () {
     const { incorrectLogin } = this.state.login;
-    const { authUser } = this.state;
+    const { viewPreset, bpm } = this.state;
     return (
       <Routes>
-        <Route exact path='/' element={<Machine authUser={authUser} loadUserPresets={this.loadUserPresets}/>}/>
-        <Route exact path='/login' element={<Login handleChange={this.handleChange} submitLogin={this.submitLogin} loadUserPresets={this.loadUserPresets} incorrectLogin={incorrectLogin}/>}/>
+
+        <Route exact path='/' element={<Machine 
+          viewPreset={viewPreset} 
+          bpm={bpm}
+          startStop={this.startStop}
+          adjustBpm={this.adjustBpm}
+          loadUserPresets={this.loadUserPresets} 
+          updatePreset={this.updatePreset} 
+          handleChange={this.handleChange}
+        />}/>
+
+        <Route exact path='/login' element={<Login 
+          handleChange={this.handleChange} 
+          submitLogin={this.submitLogin} 
+          loadUserPresets={this.loadUserPresets} 
+          incorrectLogin={incorrectLogin}
+        />}/>
+
         <Route exact path='/register' element={<Register/>}/>
+
       </Routes>
     )
   }

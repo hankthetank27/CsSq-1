@@ -36,6 +36,7 @@ sessionController.isLoggedIn = (req, res, next) => {
   Session.findOne({ cookieId: req.cookies.ssid }).then((result) => {
     if (result) {
       res.locals.cookie = result.cookieId;
+      console.log('sessionController.isLoggedIn: ', res.locals.cookie)
       return next();
     } 
     else {

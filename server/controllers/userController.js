@@ -27,27 +27,63 @@ userController.createNewUser = (req, res, next) => {
     })));
 };
 
-userController.getUser = (req, res, next) => {
+userController.verifyUser = (req, res, next) => {
   const credentials = req.headers.authorization.split(' ');
   userModel.findOne({username: credentials[0]})
     .then(userInfo => {
       if (userInfo) {
         if (userInfo.username === credentials[0] && userInfo.password === credentials[1]) {
+          console.log('userController.verifyUser: ', userInfo)
           res.locals.userInfo = userInfo;
           return next();
         }
       }
       return next(createErr({
-        method: 'getUser',
+        method: 'verifyUser',
         type: 'when getting user entry from DB',
         err: 'could not locate user in DB.'
       }));
     })
     .catch(err => next(createErr({
-      method: 'getUser',
+      method: 'verifyUser',
       type: 'when getting user entry from DB',
       err: err
     })));
+}
+
+userController.getUserInfo = (req, res, next) => {
+  userModel.findOne({username: res.locals.cookie})
+    .then(userInfo => {
+      if (userInfo) {
+          console.log('userController.getUserInfo: ', userInfo)
+          res.locals.userInfo = userInfo;
+          return next();
+      }
+      return next(createErr({
+        method: 'getUserInfo',
+        type: 'when getting user entry from DB',
+        err: 'could not locate user in DB.'
+      }));
+    })
+}
+
+userController.updatePreset = (req, res, next) => {
+  console.log('userController.updatePreset, req.body: ', req.body)
+  const update = req.body
+  userModel.findOneAndUpdate({username: res.locals.cookie}, {preset: update},
+     {new: true})
+      .then(userInfo => {
+        if (userInfo) {
+            console.log('userController.updatePreset, user found and updated: ', userInfo)
+            res.locals.userInfo = userInfo;
+            return next();
+        }
+        return next(createErr({
+          method: 'getUserInfo',
+          type: 'when getting user entry from DB',
+          err: 'could not locate user in DB.'
+        }));
+      })
 }
 
 module.exports = userController;

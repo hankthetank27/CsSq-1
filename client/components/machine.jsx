@@ -15,7 +15,15 @@ class Machine extends Component {
           </div>
         </header>
         <div className='appBody'>
-          <Box/>
+          <Box 
+            bpm={this.props.bpm} 
+            startStop={this.props.startStop}
+            adjustBpm={this.props.adjustBpm}
+            viewPreset={this.props.viewPreset} 
+            updatePreset={this.props.updatePreset} 
+            loadUserPresets={this.props.loadUserPresets} 
+            handleChange={this.props.handleChange}
+          />
         </div>
         <div>
           {this.props.authUser}
