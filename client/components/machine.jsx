@@ -17,6 +17,9 @@ class Machine extends Component {
         <div className='appBody'>
           <Box/>
         </div>
+        <div>
+          {this.props.authUser}
+        </div>
       </div>
     )
   }

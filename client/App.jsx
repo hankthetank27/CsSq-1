@@ -19,10 +19,12 @@ class App extends Component {
         username: '',
         pass: '',
         incorrectLogin: ''
-      }
+      },
+      authUser: ''
     }
     this.handleChange = this.handleChange.bind(this);
     this.submitLogin = this.submitLogin.bind(this);
+    this.loadUserPresets = this.loadUserPresets.bind(this);
     this.makeSynths = this.makeSynths.bind(this);
     this.makeGrid = this.makeGrid.bind(this);
     this.configLoop = this.configLoop.bind(this);
@@ -67,7 +69,19 @@ class App extends Component {
     return res;
   }
 
+  async loadUserPresets () {
+    const res = await fetch('/api/loadPreset',{
+      method: 'get'
+    })
+    const data = await res.json();
+    this.setState({authUser: data.cookie});
+  }
+
   componentDidMount () {
+    console.log('app mounted')
+
+    this.loadUserPresets();
+
     this.setState({grid: this.makeGrid(this.state.notes)}, () => {
       Tone.start().then(() => {
         const{ grid, synthCount } = this.state;
@@ -117,11 +131,12 @@ class App extends Component {
   }
 
   render () {
-    const { incorrectLogin } = this.state.login
+    const { incorrectLogin } = this.state.login;
+    const { authUser } = this.state;
     return (
       <Routes>
-        <Route exact path='/' element={<Machine/>}/>
-        <Route exact path='/login' element={<Login handleChange={this.handleChange} submitLogin={this.submitLogin} incorrectLogin={incorrectLogin}/>}/>
+        <Route exact path='/' element={<Machine authUser={authUser} loadUserPresets={this.loadUserPresets}/>}/>
+        <Route exact path='/login' element={<Login handleChange={this.handleChange} submitLogin={this.submitLogin} loadUserPresets={this.loadUserPresets} incorrectLogin={incorrectLogin}/>}/>
         <Route exact path='/register' element={<Register/>}/>
       </Routes>
     )

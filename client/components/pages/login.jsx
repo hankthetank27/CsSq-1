@@ -8,6 +8,7 @@ const Login = props => {
     const res = await props.submitLogin(event);
     if (res.status === 200){
       navigate('../', {replace: true})
+      props.loadUserPresets();
     }
   }
 
