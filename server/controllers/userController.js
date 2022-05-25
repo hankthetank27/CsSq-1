@@ -28,12 +28,14 @@ userController.createNewUser = (req, res, next) => {
 };
 
 userController.getUser = (req, res, next) => {
-  const username = req.params.user;
-  userModel.findOne({username: username})
+  const credentials = req.headers.authorization.split(' ');
+  userModel.findOne({username: credentials[0]})
     .then(userInfo => {
       if (userInfo) {
-        res.locals.userInfo = userInfo;
-        return next();
+        if (userInfo.username === credentials[0] && userInfo.password === credentials[1]) {
+          res.locals.userInfo = userInfo;
+          return next();
+        }
       }
       return next(createErr({
         method: 'getUser',

@@ -95,6 +95,10 @@ a:visited{
   align-items: center;
 }
 
+.incorrectCreds {
+  color: rgba(44, 70, 70, 0.534);
+}
+
 .textField {
   height: 20px;
   width: 200px;
