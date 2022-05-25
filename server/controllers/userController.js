@@ -17,7 +17,7 @@ userController.createNewUser = (req, res, next) => {
   const newUser = Object.assign({}, req.body)
   userModel.create(newUser)
     .then(newUser => {
-      res.locals.newUser = newUser;
+      res.locals.userInfo = newUser;
       return next();
     })
     .catch(err => next(createErr({

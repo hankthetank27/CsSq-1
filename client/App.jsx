@@ -21,12 +21,18 @@ class App extends Component {
         pass: '',
         incorrectLogin: ''
       },
+      register: {
+        username: '',
+        pass: '',
+        userExists: ''
+      },
       viewPreset: false,
       setBpm: '',
       isPlaying: false
     }
     this.handleChange = this.handleChange.bind(this);
     this.submitLogin = this.submitLogin.bind(this);
+    this.submitRegister = this.submitRegister.bind(this);
     this.loadUserPresets = this.loadUserPresets.bind(this);
     this.updatePreset = this.updatePreset.bind(this);
     this.startStop = this.startStop.bind(this); 
@@ -53,12 +59,22 @@ class App extends Component {
     if (id === 'loginUsernameField'){
       const login = {...this.state.login}
       login.username = value;
-      this.setState({login}, () => console.log(this.state));
+      this.setState({login}, () => console.log(this.state.login));
     } 
     if (id === 'loginPasswordField'){
       const login = {...this.state.login}
       login.pass = value;
-      this.setState({login}, () => console.log(this.state));
+      this.setState({login}, () => console.log(this.state.login));
+    }
+    if (id === 'registerUsernameField'){
+      const register = {...this.state.register}
+      register.username = value;
+      this.setState({register}, () => console.log(this.state.register));
+    } 
+    if (id === 'registerPasswordField'){
+      const register = {...this.state.register}
+      register.pass = value;
+      this.setState({register}, () => console.log(this.state.register));
     }
     if (id === 'setBpm'){
       this.setState({setBpm: value}, () => console.log(this.state));
@@ -84,9 +100,38 @@ class App extends Component {
     )
     if (res.status !== 200) {
       login.incorrectLogin = 'Incorrect username or password';
-      this.setState({login})
-    } 
+      this.setState({login});
+    }
     return res;
+  }
+
+  async submitRegister (event) {
+    event.preventDefault()
+
+    const { username, pass } = this.state.register;
+    const { bpm, beat, synthCount, notes, grid } = this.state;
+    try {
+      const res = await fetch('/api/', {
+        method: 'post',
+        body: JSON.stringify({
+          username: username,
+          password: pass,
+          preset: {
+            bpm: bpm,
+            beat: beat,
+            synthCount: synthCount,
+            notes: notes,
+            grid: grid
+          }
+        }),
+        headers: {
+          'Content-Type' : 'application/json; charset=UTF-8'
+        }
+      })
+      return res;
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async loadUserPresets (event) {
@@ -114,7 +159,7 @@ class App extends Component {
   }
 
   async updatePreset (event) {
-    event.preventDefault();
+    if (event) event.preventDefault();
     const { bpm, beat, synthCount, notes, grid } = this.state;
     try {
       const res = await fetch('/api/updatePreset', {
@@ -200,6 +245,7 @@ class App extends Component {
 
   render () {
     const { incorrectLogin } = this.state.login;
+    const { userExists } = this.state.register;
     const { viewPreset, bpm } = this.state;
     return (
       <Routes>
@@ -221,7 +267,12 @@ class App extends Component {
           incorrectLogin={incorrectLogin}
         />}/>
 
-        <Route exact path='/register' element={<Register/>}/>
+        <Route exact path='/register' element={<Register
+          handleChange={this.handleChange}
+          submitRegister={this.submitRegister}
+          loadUserPresets={this.loadUserPresets}
+          userExists={userExists}
+        />}/>
 
       </Routes>
     )

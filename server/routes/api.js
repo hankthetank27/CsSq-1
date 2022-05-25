@@ -11,6 +11,11 @@ router.get('/',
   (req, res) => res.status(200).json(res.locals.userInfo)
 )
 
+router.post('/',
+  userController.createNewUser, sessionController.setCookie, sessionController.startSession,
+  (req, res) => res.status(200).json(res.locals.newUser)
+);
+
 router.get('/loadPreset', sessionController.isLoggedIn, userController.getUserInfo,
   (req, res) => res.status(200).json(res.locals.userInfo)
 )
@@ -19,9 +24,5 @@ router.put('/updatePreset', sessionController.isLoggedIn, userController.updateP
   (req, res) => res.status(200).json(res.locals.userInfo)
 )
 
-router.post('/',
-  userController.createNewUser,
-  (req, res) => res.status(200).json(res.locals.newUser)
-);
 
 module.exports = router;
