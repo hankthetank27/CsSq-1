@@ -6,6 +6,7 @@ module.exports = {
   entry: './client/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
     filename: 'bundle.js'
   },
   mode: process.env.NODE_ENV,
@@ -26,6 +27,9 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       }
     ]
+  },
+  devServer: {
+    historyApiFallback: true,
   },
   plugins: [
     new HtmlWebpackPlugin({

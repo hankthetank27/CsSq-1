@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Machine from './components/machine.jsx';
+import { Link } from 'react-router-dom';
+import Box from './components/box.jsx';
 import './stylesheets/styles.css';
 import * as Tone from 'tone';
 
@@ -72,7 +73,17 @@ class App extends Component {
   render () {
     return (
       <div className='app'>
-        <Machine/>
+        <header className='appHeader'>
+          <h1 className='title'>Drum Machine</h1>
+          <div className='headerFiller'/>
+          <div className='loginRegContainer'>
+            <Link to='/login'>Login</Link>
+            <Link to='/register'>Register</Link>
+          </div>
+        </header>
+        <div className='appBody'>
+          <Box/>
+        </div>
       </div>
     )
   }

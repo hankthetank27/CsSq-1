@@ -4,15 +4,15 @@ const userModel = require('../models/userModel');
 const createErr = (errInfo) => {
   const { method, type, err } = errInfo;
   return { 
-    log: `controllers.${method} ${type}: ERROR: ${typeof err === 'object' ? JSON.stringify(err) : err}`,
-    message: { err: `Error occurred in controllers.${method}. Check server logs for more details.` }
+    log: `userController.${method} ${type}: ERROR: ${typeof err === 'object' ? JSON.stringify(err) : err}`,
+    message: { err: `Error occurred in userController.${method}. Check server logs for more details.` }
   };
 };
 
-//controllers
-const controllers = {};
+//userController
+const userController = {};
 
-controllers.createNewUser = (req, res, next) => {
+userController.createNewUser = (req, res, next) => {
   console.log('testPost req.body: ', req.body)
   const newUser = Object.assign({}, req.body)
   userModel.create(newUser)
@@ -27,7 +27,7 @@ controllers.createNewUser = (req, res, next) => {
     })));
 };
 
-controllers.getUser = (req, res, next) => {
+userController.getUser = (req, res, next) => {
   const username = req.params.user;
   userModel.findOne({username: username})
     .then(userInfo => {
@@ -48,4 +48,4 @@ controllers.getUser = (req, res, next) => {
     })));
 }
 
-module.exports = controllers;
+module.exports = userController;

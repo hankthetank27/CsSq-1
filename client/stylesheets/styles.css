@@ -1,5 +1,16 @@
 * {
   background-color: rgb(217, 240, 232);
+  color: rgb(15, 23, 23);
+}
+
+a {
+  font-style: oblique;
+  text-decoration:none;
+  color: rgb(44, 70, 70);
+}
+
+a:visited{
+  color: rgb(44, 70, 70);
 }
 
 .footer {
@@ -8,15 +19,43 @@
 
 .app {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.appBody {
+  display: flex;
   justify-content: center;
   align-items: center;
   height: 80vh;
 }
 
+.appHeader {
+  flex-basis: auto;
+  display: flex;
+  justify-content: space-around;
+}
+
+.headerFiller {
+  width: 1000px;
+  background-color: transparent;
+}
+
+.title {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.loginRegContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .machineContainer {
   display: flex;
   flex-direction: column;
-  border: 2px solid black;
+  border: 2px solid rgb(15, 23, 23);
 }
 
 .noteButton {
@@ -31,10 +70,32 @@
   height: 30px;
 }
 
-.{
-
-}
-
 .row {
   display: flex;
+}
+
+.editRow {
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.loginContainer {
+  border: 2px solid rgb(15, 23, 23);
+  margin: 5px;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.loginOuter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.textField {
+  height: 20px;
+  width: 200px;
 }

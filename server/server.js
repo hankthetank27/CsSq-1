@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -19,6 +20,7 @@ mongoose.connect('mongodb://localhost:27017/',
 //handle parsing request body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
+app.use(cookieParser());
 
 //uses /dist for static files in webpack production mode
 console.log(process.env.NODE_ENV)

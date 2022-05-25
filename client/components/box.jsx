@@ -1,9 +1,8 @@
 import React from 'react';
 import Row from './row.jsx';
 import TransportCtl from './transportCtl.jsx';
-import * as Tone from 'tone';
 
-const Machine = props => {
+const Box = props => {
   return (
     <div className='machineContainer'>
       <TransportCtl/>
@@ -14,4 +13,4 @@ const Machine = props => {
   )
 }
 
-export default Machine;
+export default Box;
