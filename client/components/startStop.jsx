@@ -2,7 +2,7 @@ import React from 'react';
 
 const StartStop = props => {
  return (
-   <button onClick={props.startStop}>Start/Stop</button>
+   <button className='startStop' onClick={props.startStop}>Start/Stop</button>
  )
 }
 

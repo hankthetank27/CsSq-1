@@ -29,7 +29,8 @@ class App extends Component {
       viewPreset: false,
       setBpm: '',
       isPlaying: false,
-      scheduleRepeatId: 0
+      scheduleRepeatId: 0,
+      transportLocation: 0
     }
     this.handleChange = this.handleChange.bind(this);
     this.submitLogin = this.submitLogin.bind(this);
@@ -220,13 +221,14 @@ class App extends Component {
       grid.forEach((row, index) => {
         let synth = synths[index];
         let note = row[beat];
-        console.log('notes: ', note);
         if (note.isActive) {
           synth.triggerAttackRelease(note.note, "8n", time);
         }
       });
       beat = (beat + 1) % 8;
-      console.log('beat :', beat)
+      this.setState({transportLocation: beat}, ()=> {
+        console.log('beat :', this.state.transportLocation)
+      })
     };
 
     Tone.Transport.bpm.value = bpm;
@@ -281,7 +283,8 @@ class App extends Component {
     this.setState({isPlaying : false});
   }
 
-  adjustBpm () {
+  adjustBpm (event) {
+    if (event) event.preventDefault();
     const { setBpm } = this.state;
     Tone.Transport.bpm.value = setBpm;
     this.setState({bpm: setBpm})
@@ -290,7 +293,7 @@ class App extends Component {
   render () {
     const { incorrectLogin } = this.state.login;
     const { userExists } = this.state.register;
-    const { viewPreset, bpm, notes, currentUser, grid } = this.state;
+    const { viewPreset, bpm, notes, currentUser, grid, transportLocation } = this.state;
     return (
       <Routes>
 
@@ -300,6 +303,7 @@ class App extends Component {
           notes={notes}
           currentUser={currentUser}
           grid={grid}
+          transportLocation={transportLocation}
           editNote={this.editNote}
           editSequence={this.editSequence}
           stop={this.stop}

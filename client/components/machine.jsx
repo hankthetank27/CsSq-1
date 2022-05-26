@@ -25,6 +25,7 @@ class Machine extends Component {
             bpm={this.props.bpm} 
             notes={this.props.notes}
             grid={this.props.grid}
+            transportLocation={this.props.transportLocation}
             editNote={this.props.editNote}
             editSequence={this.props.editSequence}
             startStop={this.props.startStop}

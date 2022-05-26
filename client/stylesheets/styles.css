@@ -57,12 +57,25 @@ a:visited{
 .machineContainer {
   display: flex;
   flex-direction: column;
-  border: 2px solid rgb(15, 23, 23);
+  border: 2px solid rgba(15, 23, 23, 0.612);
 }
+
+/* button {
+  border-color: rgba(15, 23, 23, 0.249);
+} */
 
 .noteButton {
   height: 100px;
   width: 100px;
+  transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+}
+
+.bpmForm {
+  margin-left: 5px;
+}
+
+.startStop {
+  margin-right: 5px;
 }
 
 .transport {

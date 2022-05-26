@@ -8,7 +8,8 @@ const Box = props => {
     rows.push(<Row id={
       `row${i}`} 
       key={`keyRow${i}`} 
-      rowNum={i} 
+      rowNum={i}
+      transportLocation={props.transportLocation} 
       editSequence={props.editSequence} 
       editNote={props.editNote} 
       grid={props.grid}

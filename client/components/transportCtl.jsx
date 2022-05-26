@@ -13,7 +13,6 @@ class TransportCtl extends Component {
           bpm={this.props.bpm} 
           adjustBpm={this.props.adjustBpm} 
           handleChange={this.props.handleChange} 
-          autocomplete='off'
         />
         {preset}
         <StartStop startStop={this.props.startStop}/>
