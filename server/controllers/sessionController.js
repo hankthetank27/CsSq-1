@@ -1,5 +1,15 @@
 const Session = require('../models/sessionModel');
 
+//error gen
+const createErr = (errInfo) => {
+  const { method, type, err } = errInfo;
+  return { 
+    log: `sessionController.${method} ${type}: ERROR: ${typeof err === 'object' ? JSON.stringify(err) : err}`,
+    message: { err: `Error occurred in sessionController.${method}. Check server logs for more details.` }
+  };
+};
+
+//session controllers
 const sessionController = {};
 
 sessionController.setCookie = (req, res, next) => {
@@ -27,9 +37,11 @@ sessionController.startSession = (req, res, next) => {
         return next();
       }
     })
-    .catch((err) => {
-      return next(err);
-    });
+    .catch(err => next(createErr({
+      method: 'startSession',
+      type: 'when starting new session',
+      err: err
+    })));
 };
 
 sessionController.isLoggedIn = (req, res, next) => {
@@ -43,7 +55,12 @@ sessionController.isLoggedIn = (req, res, next) => {
       console.log('the cookie does not exist');
       res.status(200).send('session not found');
     }
-  });
+  })
+  .catch(err => next(createErr({
+    method: 'isLoggedIn',
+    type: 'when when verifying user is logged in via cookies',
+    err: err
+  })));
 };
 
 module.exports = sessionController;

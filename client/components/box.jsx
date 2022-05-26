@@ -3,6 +3,10 @@ import Row from './row.jsx';
 import TransportCtl from './transportCtl.jsx';
 
 const Box = props => {
+  const rows = [];
+  for (let i = 0; i < props.notes.length; i++){
+    rows.push(<Row id={`row${i}`} key={`keyRow${i}`} rowNum={i} editSequence={props.editSequence} grid={props.grid}/>)
+  }
   return (
     <div className='machineContainer'>
       <TransportCtl 
@@ -14,9 +18,7 @@ const Box = props => {
         loadUserPresets={props.loadUserPresets} 
         handleChange={props.handleChange}
       />
-      <Row/>
-      <Row/>
-      <Row/>
+      {rows}
     </div>
   )
 }

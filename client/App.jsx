@@ -5,7 +5,6 @@ import Register from "./components/pages/register.jsx";
 import Machine from './components/machine.jsx';
 import './stylesheets/styles.css';
 import * as Tone from 'tone';
-import { set } from 'mongoose';
 
 class App extends Component {
   constructor () {
@@ -26,6 +25,7 @@ class App extends Component {
         pass: '',
         userExists: ''
       },
+      currentUser: '',
       viewPreset: false,
       setBpm: '',
       isPlaying: false
@@ -40,6 +40,7 @@ class App extends Component {
     this.makeSynths = this.makeSynths.bind(this);
     this.makeGrid = this.makeGrid.bind(this);
     this.configLoop = this.configLoop.bind(this);
+    this.editSequence = this.editSequence.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
   }
 
@@ -48,7 +49,6 @@ class App extends Component {
 
     this.setState({grid: this.makeGrid(this.state.notes)}, () => {
       Tone.start().then(() => {
-
         this.configLoop();
       })
     })
@@ -100,7 +100,7 @@ class App extends Component {
     )
     if (res.status !== 200) {
       login.incorrectLogin = 'Incorrect username or password';
-      this.setState({login});
+      return this.setState({login});
     }
     return res;
   }
@@ -141,17 +141,19 @@ class App extends Component {
         method: 'get'
       })
       const data = await res.json();
-      const { bpm, beat, synthCount, notes, grid } = data.preset;
+      const { bpm, beat, synthCount, notes, grid,  } = data.preset;
       this.setState({
         bpm: bpm,
         beat: beat,
         synthCount: synthCount,
         notes: notes,
         grid: grid,
-        viewPreset: true 
+        viewPreset: true,
+        currentUser: data.username
       }, () => {
         console.log('current user preset data', data.preset)
         console.log('state after loading user preset: ', this.state)
+        this.configLoop();
       });
     } catch (err) {
       console.log(err);
@@ -196,7 +198,7 @@ class App extends Component {
     for (const note of notes) {
       const row = [];
       for (let i = 0; i < 8; i++){
-        row.push({note: note, isActive: true})
+        row.push({note: note, isActive: false})
       }
       rows.push(row);
     }
@@ -223,6 +225,19 @@ class App extends Component {
     Tone.Transport.scheduleRepeat(repeat, "8n");
   }
 
+  editSequence (event) {
+    event.preventDefault();
+    const { grid } = this.state;
+    const rowVal = Number(event.target.id[0]);
+    const noteVal = Number(event.target.id[1]);
+    if (grid[rowVal][noteVal].isActive){
+      grid[rowVal][noteVal].isActive = false;
+    } else {
+      grid[rowVal][noteVal].isActive = true;
+    }
+    this.setState({grid: grid})
+  }
+
   async startStop (event) {
     event.preventDefault();
     const { isPlaying } = this.state;
@@ -230,7 +245,6 @@ class App extends Component {
       await Tone.Transport.stop();
       this.setState({isPlaying : false});
     } else {
-      this.configLoop(); 
       await Tone.Transport.start()
       this.setState({isPlaying : true});
     }
@@ -238,21 +252,24 @@ class App extends Component {
 
   adjustBpm () {
     const { setBpm } = this.state;
-    this.setState({bpm: setBpm}, () => {
-      this.configLoop();
-    });
+    Tone.Transport.bpm.value = setBpm;
+    this.setState({bpm: setBpm})
   }
 
   render () {
     const { incorrectLogin } = this.state.login;
     const { userExists } = this.state.register;
-    const { viewPreset, bpm } = this.state;
+    const { viewPreset, bpm, notes, currentUser, grid } = this.state;
     return (
       <Routes>
 
         <Route exact path='/' element={<Machine 
           viewPreset={viewPreset} 
           bpm={bpm}
+          notes={notes}
+          currentUser={currentUser}
+          grid={grid}
+          editSequence={this.editSequence}
           startStop={this.startStop}
           adjustBpm={this.adjustBpm}
           loadUserPresets={this.loadUserPresets} 

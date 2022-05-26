@@ -1,14 +1,20 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Box from './box.jsx';
+import LoginName from './loginName.jsx';
 
 class Machine extends Component {
   render () {
+    let loginName;
+    if (this.props.currentUser) loginName = <LoginName currentUser={this.props.currentUser}/>;
     return (
       <div className='app'>
         <header className='appHeader'>
-          <h1 className='title'>Drum Machine</h1>
-          <div className='headerFiller'/>
+          <div/>
+          <div className='headerFiller'>
+            <h1 className='title'>CsSq-1</h1>
+            {loginName}
+          </div>
           <div className='loginRegContainer'>
             <Link to='/login'>Login</Link>
             <Link to='/register'>Register</Link>
@@ -17,6 +23,9 @@ class Machine extends Component {
         <div className='appBody'>
           <Box 
             bpm={this.props.bpm} 
+            notes={this.props.notes}
+            grid={this.props.grid}
+            editSequence={this.props.editSequence}
             startStop={this.props.startStop}
             adjustBpm={this.props.adjustBpm}
             viewPreset={this.props.viewPreset} 
