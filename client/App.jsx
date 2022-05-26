@@ -36,12 +36,14 @@ class App extends Component {
     this.submitRegister = this.submitRegister.bind(this);
     this.loadUserPresets = this.loadUserPresets.bind(this);
     this.updatePreset = this.updatePreset.bind(this);
-    this.startStop = this.startStop.bind(this); 
+    this.startStop = this.startStop.bind(this);
+    this.stop = this.stop.bind(this); 
     this.adjustBpm = this.adjustBpm.bind(this);
     this.makeSynths = this.makeSynths.bind(this);
     this.makeGrid = this.makeGrid.bind(this);
     this.configLoop = this.configLoop.bind(this);
     this.editSequence = this.editSequence.bind(this);
+    this.editNote = this.editNote.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
   }
 
@@ -51,7 +53,7 @@ class App extends Component {
         this.configLoop();
       })
     })
-   this.loadUserPresets();
+    this.loadUserPresets();
   }
 
   handleChange (event) {
@@ -207,8 +209,7 @@ class App extends Component {
 
   configLoop () {
 
-    Tone.Transport.stop();
-    this.setState({isPlaying : false});
+    this.stop()
     Tone.Transport.clear(this.state.scheduleRepeatId);
 
     const{ grid, synthCount, bpm } = this.state;
@@ -247,6 +248,21 @@ class App extends Component {
     this.setState({grid: grid})
   }
 
+  editNote (event) {
+    event.preventDefault();
+    const { notes, grid } = this.state;
+    notes[Number(event.target.id)] = event.target.value + '4';
+    console.log(notes)
+
+    grid[Number(event.target.id)].forEach(obj => {
+      obj.note = event.target.value + '4';
+    })
+
+    this.setState({notes: notes, grid: grid}, () => {
+      console.log('setState on editNote:, ', this.state)
+    })
+  }
+
   startStop (event) {
     if (event) event.preventDefault();
     const { isPlaying } = this.state;
@@ -257,6 +273,12 @@ class App extends Component {
       Tone.Transport.start()
       this.setState({isPlaying : true});
     }
+  }
+
+  stop (event) {
+    if (event) preventDefault()
+    Tone.Transport.stop();
+    this.setState({isPlaying : false});
   }
 
   adjustBpm () {
@@ -278,7 +300,9 @@ class App extends Component {
           notes={notes}
           currentUser={currentUser}
           grid={grid}
+          editNote={this.editNote}
           editSequence={this.editSequence}
+          stop={this.stop}
           startStop={this.startStop}
           adjustBpm={this.adjustBpm}
           loadUserPresets={this.loadUserPresets} 
@@ -287,17 +311,17 @@ class App extends Component {
         />}/>
 
         <Route exact path='/login' element={<Login 
+          incorrectLogin={incorrectLogin}
           handleChange={this.handleChange} 
           submitLogin={this.submitLogin} 
-          loadUserPresets={this.loadUserPresets} 
-          incorrectLogin={incorrectLogin}
+          loadUserPresets={this.loadUserPresets}
         />}/>
 
         <Route exact path='/register' element={<Register
+          userExists={userExists}
           handleChange={this.handleChange}
           submitRegister={this.submitRegister}
           loadUserPresets={this.loadUserPresets}
-          userExists={userExists}
         />}/>
 
       </Routes>

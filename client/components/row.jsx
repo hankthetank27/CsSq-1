@@ -15,7 +15,7 @@ class Row extends Component {
     return (
       <div className='row'>
         {buttons}
-        <EditRow/>
+        <EditRow id={this.props.rowNum} editNote={this.props.editNote}/>
       </div>
     )
   }

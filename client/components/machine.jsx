@@ -16,8 +16,8 @@ class Machine extends Component {
             {loginName}
           </div>
           <div className='loginRegContainer'>
-            <Link to='/login'>Login</Link>
-            <Link to='/register'>Register</Link>
+            <Link to='/login' onClick={() => this.props.stop()}>Login</Link>
+            <Link to='/register' onClick={() => this.props.stop()}>Register</Link>
           </div>
         </header>
         <div className='appBody'>
@@ -25,6 +25,7 @@ class Machine extends Component {
             bpm={this.props.bpm} 
             notes={this.props.notes}
             grid={this.props.grid}
+            editNote={this.props.editNote}
             editSequence={this.props.editSequence}
             startStop={this.props.startStop}
             adjustBpm={this.props.adjustBpm}
