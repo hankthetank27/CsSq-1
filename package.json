@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/hankthetank27/cs-solo-project#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "buffer": "^6.0.3",
     "cookie-parser": "^1.4.6",
     "express": "^4.18.1",

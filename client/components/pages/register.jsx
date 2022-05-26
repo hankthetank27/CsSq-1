@@ -17,7 +17,7 @@ const Register = props => {
         <div className='userExists'>{props.userExists}</div>
           <div className='loginContainer'>
             <form className='loginForm'>
-              <input id='registerUsernameField' className='textField' type='text' placeholder='Username' onChange={props.handleChange}/>
+              <input id='registerUsernameField' className='textField' type='text' placeholder='Username' onChange={props.handleChange} autoComplete='off'/>
               <input id='registerPasswordField' className='textField' type='password' placeholder='Password' onChange={props.handleChange}/>
               <button onClick={submit}>Create Account</button>
             </form>

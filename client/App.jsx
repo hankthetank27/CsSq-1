@@ -62,25 +62,25 @@ class App extends Component {
     if (id === 'loginUsernameField'){
       const login = {...this.state.login}
       login.username = value;
-      this.setState({login}, () => console.log(this.state.login));
+      this.setState({login});
     } 
     if (id === 'loginPasswordField'){
       const login = {...this.state.login}
       login.pass = value;
-      this.setState({login}, () => console.log(this.state.login));
+      this.setState({login});
     }
     if (id === 'registerUsernameField'){
       const register = {...this.state.register}
       register.username = value;
-      this.setState({register}, () => console.log(this.state.register));
+      this.setState({register});
     } 
     if (id === 'registerPasswordField'){
       const register = {...this.state.register}
       register.pass = value;
-      this.setState({register}, () => console.log(this.state.register));
+      this.setState({register});
     }
     if (id === 'setBpm'){
-      this.setState({setBpm: value}, () => console.log(this.state));
+      this.setState({setBpm: value});
     }
   }
 

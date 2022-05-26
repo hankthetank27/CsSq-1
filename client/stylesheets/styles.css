@@ -1,6 +1,6 @@
 * {
   background-color: #d9f0e8;
-  color: rgb(15, 23, 23);
+  color: rgb(28, 43, 43);
 }
 
 a {
@@ -58,11 +58,9 @@ a:visited{
   display: flex;
   flex-direction: column;
   border: 2px solid rgba(15, 23, 23, 0.612);
+  border-radius: 4px;
+  padding: 1px;
 }
-
-/* button {
-  border-color: rgba(15, 23, 23, 0.249);
-} */
 
 .noteButton {
   height: 100px;

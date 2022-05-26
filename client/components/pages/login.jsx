@@ -18,7 +18,7 @@ const Login = props => {
        <div className='incorrectCreds'>{props.incorrectLogin}</div>
         <div className='loginContainer'>
           <form className='loginForm'>
-            <input id='loginUsernameField' className='textField' type='text' placeholder='Username' onChange={props.handleChange}/>
+            <input id='loginUsernameField' className='textField' type='text' placeholder='Username' onChange={props.handleChange} autoComplete='off'/>
             <input id='loginPasswordField' className='textField' type='password' placeholder='Password' onChange={props.handleChange}/>
             <button onClick={submit}>Submit</button>
           </form>

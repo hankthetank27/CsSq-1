@@ -1,4 +1,5 @@
 const userModel = require('../models/userModel');
+const bcrypt = require('bcrypt');
 
 //error gen
 const createErr = (errInfo) => {
@@ -29,20 +30,26 @@ userController.createNewUser = (req, res, next) => {
 
 userController.verifyUser = (req, res, next) => {
   const credentials = req.headers.authorization.split(' ');
-  userModel.findOne({username: credentials[0]})
+  const username = credentials[0];
+  const plPassword = credentials[1];
+
+  userModel.findOne({username: username})
     .then(userInfo => {
-      if (userInfo) {
-        if (userInfo.username === credentials[0] && userInfo.password === credentials[1]) {
-          console.log('userController.verifyUser: ', userInfo)
-          res.locals.userInfo = userInfo;
-          return next();
-        }
+      if (userInfo && userInfo.username === username) {
+        bcrypt.compare(plPassword, userInfo.password)
+          .then(validPass => {
+            if (!validPass) return next('password incorrect');
+            console.log('userController.verifyUser: ', userInfo)
+            res.locals.userInfo = userInfo;
+            return next();
+          })
+      } else {
+        return next(createErr({
+          method: 'verifyUser',
+          type: 'when getting user entry from DB',
+          err: 'could not locate user in DB.'
+        }));
       }
-      return next(createErr({
-        method: 'verifyUser',
-        type: 'when getting user entry from DB',
-        err: 'could not locate user in DB.'
-      }));
     })
     .catch(err => next(createErr({
       method: 'verifyUser',
