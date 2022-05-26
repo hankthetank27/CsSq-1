@@ -12,8 +12,8 @@ class App extends Component {
     this.state = {
       bpm: 120,
       beat: 0,
-      synthCount: 3,
-      notes: ["F4", "Eb4", "C4"],
+      synthCount: 4,
+      notes: ["F4", "Eb4", "C4", "G4"],
       grid: [],
       login: {
         username: '',
@@ -28,7 +28,8 @@ class App extends Component {
       currentUser: '',
       viewPreset: false,
       setBpm: '',
-      isPlaying: false
+      isPlaying: false,
+      scheduleRepeatId: 0
     }
     this.handleChange = this.handleChange.bind(this);
     this.submitLogin = this.submitLogin.bind(this);
@@ -44,14 +45,13 @@ class App extends Component {
     this.componentDidMount = this.componentDidMount.bind(this);
   }
 
-  componentDidMount () {
-    this.loadUserPresets();
-
+  componentDidMount () { 
     this.setState({grid: this.makeGrid(this.state.notes)}, () => {
       Tone.start().then(() => {
         this.configLoop();
       })
     })
+   this.loadUserPresets();
   }
 
   handleChange (event) {
@@ -153,7 +153,7 @@ class App extends Component {
       }, () => {
         console.log('current user preset data', data.preset)
         console.log('state after loading user preset: ', this.state)
-        this.configLoop();
+        return this.configLoop()
       });
     } catch (err) {
       console.log(err);
@@ -206,14 +206,20 @@ class App extends Component {
   }
 
   configLoop () {
+
+    Tone.Transport.stop();
+    this.setState({isPlaying : false});
+    Tone.Transport.clear(this.state.scheduleRepeatId);
+
     const{ grid, synthCount, bpm } = this.state;
     const synths = this.makeSynths(synthCount);
     let beat = this.state.beat;
+
     const repeat = (time) => {
       grid.forEach((row, index) => {
         let synth = synths[index];
         let note = row[beat];
-        console.log(note)
+        console.log('notes: ', note);
         if (note.isActive) {
           synth.triggerAttackRelease(note.note, "8n", time);
         }
@@ -221,8 +227,11 @@ class App extends Component {
       beat = (beat + 1) % 8;
       console.log('beat :', beat)
     };
+
     Tone.Transport.bpm.value = bpm;
-    Tone.Transport.scheduleRepeat(repeat, "8n");
+    const id = Tone.Transport.scheduleRepeat(repeat, "8n");
+    this.setState({scheduleRepeatId: id})
+    return id;
   }
 
   editSequence (event) {
@@ -238,14 +247,14 @@ class App extends Component {
     this.setState({grid: grid})
   }
 
-  async startStop (event) {
-    event.preventDefault();
+  startStop (event) {
+    if (event) event.preventDefault();
     const { isPlaying } = this.state;
     if (isPlaying){ 
-      await Tone.Transport.stop();
+      Tone.Transport.stop();
       this.setState({isPlaying : false});
     } else {
-      await Tone.Transport.start()
+      Tone.Transport.start()
       this.setState({isPlaying : true});
     }
   }
