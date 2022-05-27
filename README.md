@@ -1,5 +1,7 @@
 CsSq-1 is a 4 voice synthesizer and programmable step sequencer.
 
+![alt text](https://github.com/hankthetank27/CsSq-1/readme_img/CsSq1.png)
+
 To run Webpack in production mode, run 'npm run build', wait for build, and run 'npm start' to open app on localhost:3000.
 
 To run Webpack is development mode, run 'npm run dev' to open app on localhost:8080 (with server proxy running on localhost:3000).
