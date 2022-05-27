@@ -1,9 +1,14 @@
-CsSq-1 is a 4 Voice synthesier and programmable step sequencer.
+CsSq-1 is a 4 voice synthesizer and programmable step sequencer.
 
-To run Webpack in production mode, run 'npm run build', wait for build, and then run 'npm start' to open app on localhost:3000.
+To run Webpack in production mode, run 'npm run build', wait for build, and run 'npm start' to open app on localhost:3000.
 
 To run Webpack is development mode, run 'npm run dev' to open app on localhost:8080 (with server proxy running on localhost:3000).
 
-In order to use user preset storage features, you must be running a local instance of MongoDB.
+In order to access user login, register, and preset storage features, you must be running a local instance of MongoDB.
+
+In Ubuntu: 
+
+'sudo service mongodb start'
+'mongo'
 
 Thank you and enjoy :)
