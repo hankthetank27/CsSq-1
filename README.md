@@ -9,6 +9,7 @@ In order to access user login, register, and preset storage features, you must b
 In Ubuntu: 
 
 'sudo service mongodb start'
+
 'mongo'
 
 Thank you and enjoy :)
