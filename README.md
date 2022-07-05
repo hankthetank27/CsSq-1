@@ -1,4 +1,4 @@
-CsSq-1 is a 4 voice synthesizer and programmable step sequencer, built with React and Tone.JS.
+CsSq-1 is a 4 voice synthesizer and programmable step sequencer, built with React and Tone.JS. Includes support for user preset storage via an Express/Node server and a NoSQL, MongoDB database.  
 
 ![alt text](https://github.com/hankthetank27/CsSq-1/blob/main/readme_img/CsSq1.png)
 
