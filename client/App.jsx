@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Login from './components/pages/login.jsx'
 import Register from "./components/pages/register.jsx";
@@ -6,92 +6,66 @@ import Machine from './components/machine.jsx';
 import './stylesheets/styles.css';
 import * as Tone from 'tone';
 
-class App extends Component {
-  constructor () {
-    super();
-    this.state = {
-      bpm: 120,
-      beat: 0,
-      synthCount: 4,
-      notes: ["F4", "Eb4", "C4", "G4"],
-      grid: [],
-      login: {
-        username: '',
-        pass: '',
-        incorrectLogin: ''
-      },
-      register: {
-        username: '',
-        pass: '',
-        userExists: ''
-      },
-      currentUser: '',
-      viewPreset: false,
-      setBpm: '',
-      isPlaying: false,
-      scheduleRepeatId: 0,
-      transportLocation: 0
+export default function App() {
+
+  const [ bpm, setBpm ] = useState(120);
+  const [ beat, setBeat ] = useState(0);
+  const [ synthCount, setSynthCount ] = useState(4);
+  const [ notes, setNotes ] = useState(["F4", "Eb4", "C4", "G4"]);
+  const [ grid, setGrid ] = useState([]);
+  const [ login, setLogin ] = useState({ username: '', pass: '', incorrectLogin: '' });
+  const [ register, setRegister ] = useState({ username: '', pass: '', userExists: '' });
+  const [ currentUser, setCurrentUser ] = useState('');
+  const [ viewPreset, setViewPreset ] = useState(false);
+  const [ handleBpm, setHandleBpm ] = useState('');
+  const [ isPlaying, setIsPlaying ] = useState(false);
+  const [ scheduleRepeatId, setScheduleRepeatId ] = useState(0);
+  const [ transportLocation, setTransportLocation ] = useState(0);
+
+  useEffect (() => {
+    const start = async () => { 
+      loadUserPresets();
+      setGrid(makeGrid(notes));
+      await Tone.start();
+      configLoop();
     }
-    this.handleChange = this.handleChange.bind(this);
-    this.submitLogin = this.submitLogin.bind(this);
-    this.submitRegister = this.submitRegister.bind(this);
-    this.loadUserPresets = this.loadUserPresets.bind(this);
-    this.updatePreset = this.updatePreset.bind(this);
-    this.startStop = this.startStop.bind(this);
-    this.stop = this.stop.bind(this); 
-    this.adjustBpm = this.adjustBpm.bind(this);
-    this.makeSynths = this.makeSynths.bind(this);
-    this.makeGrid = this.makeGrid.bind(this);
-    this.configLoop = this.configLoop.bind(this);
-    this.editSequence = this.editSequence.bind(this);
-    this.editNote = this.editNote.bind(this);
-    this.componentDidMount = this.componentDidMount.bind(this);
-  }
+    start();
+  }, []);
 
-  componentDidMount () { 
-    this.setState({grid: this.makeGrid(this.state.notes)}, () => {
-      Tone.start().then(() => {
-        this.configLoop();
-      })
-    })
-    this.loadUserPresets();
-  }
-
-  handleChange (event) {
+  const handleChange = (event) => {
     const { id, value } = event.target
     if (id === 'loginUsernameField'){
-      const login = {...this.state.login}
-      login.username = value;
-      this.setState({login});
+      const currentLogin = {...login};
+      currentLogin.username = value;
+      setLogin(currentLogin);
     } 
     if (id === 'loginPasswordField'){
-      const login = {...this.state.login}
-      login.pass = value;
-      this.setState({login});
+      const currentLogin = {...login};
+      currentLogin.pass = value;
+      setLogin(currentLogin);
     }
     if (id === 'registerUsernameField'){
-      const register = {...this.state.register}
-      register.username = value;
-      this.setState({register});
+      const currentRegister = {...register};
+      currentRegister.username = value;
+      setRegister(currentRegister);
     } 
     if (id === 'registerPasswordField'){
-      const register = {...this.state.register}
-      register.pass = value;
-      this.setState({register});
+      const currentRegister = {...register};
+      currentRegister.pass = value;
+      setRegister(currentRegister);
     }
     if (id === 'setBpm'){
-      this.setState({setBpm: value});
+      setHandleBpm(value);
     }
   }
 
-  async submitLogin (event) {
-    event.preventDefault()
+  const submitLogin = async (event) => {
+    event.preventDefault();
 
-    const login = {...this.state.login};
     login.incorrectLogin = '';
-    this.setState({login})
+    setLogin(login);
 
-    const { username, pass } = this.state.login;
+    const { username, pass } = login;
     const data = username + " " + pass;
     const res = await fetch('/api/', {
         method: 'get',
@@ -103,16 +77,16 @@ class App extends Component {
     )
     if (res.status !== 200) {
       login.incorrectLogin = 'Incorrect username or password';
-      return this.setState({login});
+      return setLogin(login);
     }
     return res;
   }
 
-  async submitRegister (event) {
+  const submitRegister = async (event) => {
     event.preventDefault()
 
-    const { username, pass } = this.state.register;
-    const { bpm, beat, synthCount, notes, grid } = this.state;
+    const { username, pass } = register;
+    
     try {
       const res = await fetch('/api/', {
         method: 'post',
@@ -137,7 +111,7 @@ class App extends Component {
     }
   }
 
-  async loadUserPresets (event) {
+  const loadUserPresets = async (event) => {
     if (event) event.preventDefault(); 
     try {
       const res = await fetch('/api/loadPreset', {
@@ -145,27 +119,24 @@ class App extends Component {
       })
       const data = await res.json();
       const { bpm, beat, synthCount, notes, grid,  } = data.preset;
-      this.setState({
-        bpm: bpm,
-        beat: beat,
-        synthCount: synthCount,
-        notes: notes,
-        grid: grid,
-        viewPreset: true,
-        currentUser: data.username
-      }, () => {
-        console.log('current user preset data', data.preset)
-        console.log('state after loading user preset: ', this.state)
-        return this.configLoop()
-      });
+
+      setBpm(bpm);
+      setBeat(beat);
+      setSynthCount(synthCount);
+      setNotes(notes);
+      setGrid(grid);
+      setViewPreset(true);
+      setCurrentUser(data.username);
+
+      return configLoop();
+
     } catch (err) {
       console.log(err);
     }
   }
 
-  async updatePreset (event) {
+  const updatePreset = async (event) => {
     if (event) event.preventDefault();
-    const { bpm, beat, synthCount, notes, grid } = this.state;
     try {
       const res = await fetch('/api/updatePreset', {
         method: 'put',
@@ -187,7 +158,7 @@ class App extends Component {
     }
   }
 
-  makeSynths (count) {
+  const makeSynths = (count) => {
     const synths = [];
     for (let i = 0; i < count; i++){
       const synth = new Tone.Synth().toDestination();
@@ -196,7 +167,7 @@ class App extends Component {
     return synths;
   }
 
-  makeGrid (notes) {
+  const makeGrid = (notes) => {
     const rows = [];
     for (const note of notes) {
       const row = [];
@@ -208,38 +179,33 @@ class App extends Component {
     return rows;
   }
 
-  configLoop () {
+  const configLoop = () => {
+    stop();
+    Tone.Transport.clear(scheduleRepeatId);
+    const synths = makeSynths(synthCount);
 
-    this.stop()
-    Tone.Transport.clear(this.state.scheduleRepeatId);
-
-    const{ grid, synthCount, bpm } = this.state;
-    const synths = this.makeSynths(synthCount);
-    let beat = this.state.beat;
+    let currentBeat = beat;
 
     const repeat = (time) => {
       grid.forEach((row, index) => {
         let synth = synths[index];
-        let note = row[beat];
+        let note = row[currentBeat];
         if (note.isActive) {
           synth.triggerAttackRelease(note.note, "8n", time);
         }
       });
-      beat = (beat + 1) % 8;
-      this.setState({transportLocation: beat}, ()=> {
-        console.log('beat :', this.state.transportLocation)
-      })
+      currentBeat = (currentBeat + 1) % 8;
+      setTransportLocation(currentBeat);
     };
 
     Tone.Transport.bpm.value = bpm;
     const id = Tone.Transport.scheduleRepeat(repeat, "8n");
-    this.setState({scheduleRepeatId: id})
+    setScheduleRepeatId(id);
     return id;
   }
 
-  editSequence (event) {
+  const editSequence = (event) => {
     event.preventDefault();
-    const { grid } = this.state;
     const rowVal = Number(event.target.id[0]);
     const noteVal = Number(event.target.id[1]);
     if (grid[rowVal][noteVal].isActive){
@@ -247,90 +213,82 @@ class App extends Component {
     } else {
       grid[rowVal][noteVal].isActive = true;
     }
-    this.setState({grid: grid})
+    setGrid(grid);
   }
 
-  editNote (event) {
+  const editNote = (event) => {
     event.preventDefault();
-    const { notes, grid } = this.state;
     notes[Number(event.target.id)] = event.target.value + '4';
-    console.log(notes)
-
     grid[Number(event.target.id)].forEach(obj => {
       obj.note = event.target.value + '4';
     })
-
-    this.setState({notes: notes, grid: grid}, () => {
-      console.log('setState on editNote:, ', this.state)
-    })
+    setNotes(notes);
+    setGrid(grid);
   }
 
-  startStop (event) {
+  const startStop = (event) => {
     if (event) event.preventDefault();
-    const { isPlaying } = this.state;
     if (isPlaying){ 
       Tone.Transport.stop();
-      this.setState({isPlaying : false});
+      setIsPlaying(false);
     } else {
       Tone.Transport.start()
-      this.setState({isPlaying : true});
+      setIsPlaying(true);
     }
   }
 
-  stop (event) {
+  const stop = (event) => {
     if (event) preventDefault()
     Tone.Transport.stop();
-    this.setState({isPlaying : false});
+    setIsPlaying(false);
   }
 
-  adjustBpm (event) {
+  const adjustBpm = (event) => {
     if (event) event.preventDefault();
-    const { setBpm } = this.state;
-    Tone.Transport.bpm.value = setBpm;
-    this.setState({bpm: setBpm})
+    Tone.Transport.bpm.value = handleBpm;
+    setBpm(handleBpm);
   }
 
-  render () {
-    const { incorrectLogin } = this.state.login;
-    const { userExists } = this.state.register;
-    const { viewPreset, bpm, notes, currentUser, grid, transportLocation } = this.state;
-    return (
-      <Routes>
+  return (
+    <Routes>
 
-        <Route exact path='/' element={<Machine 
+      <Route exact path='/' element={
+        <Machine 
           viewPreset={viewPreset} 
           bpm={bpm}
           notes={notes}
           currentUser={currentUser}
           grid={grid}
           transportLocation={transportLocation}
-          editNote={this.editNote}
-          editSequence={this.editSequence}
-          stop={this.stop}
-          startStop={this.startStop}
-          adjustBpm={this.adjustBpm}
-          loadUserPresets={this.loadUserPresets} 
-          updatePreset={this.updatePreset} 
-          handleChange={this.handleChange}
-        />}/>
+          editNote={editNote}
+          editSequence={editSequence}
+          stop={stop}
+          startStop={startStop}
+          adjustBpm={adjustBpm}
+          loadUserPresets={loadUserPresets} 
+          updatePreset={updatePreset} 
+          handleChange={handleChange}
+        />
+      }/>
 
-        <Route exact path='/login' element={<Login 
-          incorrectLogin={incorrectLogin}
-          handleChange={this.handleChange} 
-          submitLogin={this.submitLogin} 
-          loadUserPresets={this.loadUserPresets}
-        />}/>
+      <Route exact path='/login' element={
+        <Login 
+          incorrectLogin={login.incorrectLogin}
+          handleChange={handleChange} 
+          submitLogin={submitLogin} 
+          loadUserPresets={loadUserPresets}
+        />}
+      />
 
-        <Route exact path='/register' element={<Register
-          userExists={userExists}
-          handleChange={this.handleChange}
-          submitRegister={this.submitRegister}
-          loadUserPresets={this.loadUserPresets}
-        />}/>
+      <Route exact path='/register' element={
+        <Register
+          userExists={register.userExists}
+          handleChange={handleChange}
+          submitRegister={submitRegister}
+          loadUserPresets={loadUserPresets}
+        />}
+      />
 
-      </Routes>
-    )
-  }
+    </Routes>
+  )
 }
-
-export default App;
