@@ -10,7 +10,7 @@ class App extends Component {
   constructor () {
     super();
     this.state = {
-      bpm: 120,
+      //bpm: 120,
       beat: 0,
       synthCount: 4,
       notes: ["F4", "Eb4", "C4", "G4"],
@@ -27,7 +27,7 @@ class App extends Component {
       },
       currentUser: '',
       viewPreset: false,
-      setBpm: '',
+      //setBpm: '',
       isPlaying: false,
       scheduleRepeatId: 0,
       transportLocation: 0
@@ -39,7 +39,7 @@ class App extends Component {
     this.updatePreset = this.updatePreset.bind(this);
     this.startStop = this.startStop.bind(this);
     this.stop = this.stop.bind(this); 
-    this.adjustBpm = this.adjustBpm.bind(this);
+    //this.adjustBpm = this.adjustBpm.bind(this);
     this.makeSynths = this.makeSynths.bind(this);
     this.makeGrid = this.makeGrid.bind(this);
     this.configLoop = this.configLoop.bind(this);
@@ -79,9 +79,11 @@ class App extends Component {
       register.pass = value;
       this.setState({register});
     }
-    if (id === 'setBpm'){
-      this.setState({setBpm: value});
-    }
+
+    //~~~ hook in setBpm.jsx ~~~
+    // if (id === 'setBpm'){
+    //   this.setState({setBpm: value});
+    // }
   }
 
   async submitLogin (event) {
@@ -283,12 +285,13 @@ class App extends Component {
     this.setState({isPlaying : false});
   }
 
-  adjustBpm (event) {
-    if (event) event.preventDefault();
-    const { setBpm } = this.state;
-    Tone.Transport.bpm.value = setBpm;
-    this.setState({bpm: setBpm})
-  }
+  //~~~hook in setBpm.jsx~~~
+  // adjustBpm (event) {
+  //   if (event) event.preventDefault();
+  //   const { setBpm } = this.state;
+  //   Tone.Transport.bpm.value = setBpm;
+  //   this.setState({bpm: setBpm})
+  // }
 
   render () {
     const { incorrectLogin } = this.state.login;
@@ -299,7 +302,7 @@ class App extends Component {
 
         <Route exact path='/' element={<Machine 
           viewPreset={viewPreset} 
-          bpm={bpm}
+          //bpm={bpm}
           notes={notes}
           currentUser={currentUser}
           grid={grid}
@@ -308,7 +311,7 @@ class App extends Component {
           editSequence={this.editSequence}
           stop={this.stop}
           startStop={this.startStop}
-          adjustBpm={this.adjustBpm}
+          //adjustBpm={this.adjustBpm}
           loadUserPresets={this.loadUserPresets} 
           updatePreset={this.updatePreset} 
           handleChange={this.handleChange}

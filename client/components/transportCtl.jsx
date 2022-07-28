@@ -11,7 +11,7 @@ class TransportCtl extends Component {
       <div className='transport'>
         <SetBPM 
           bpm={this.props.bpm} 
-          adjustBpm={this.props.adjustBpm} 
+          //adjustBpm={this.props.adjustBpm} 
           handleChange={this.props.handleChange} 
         />
         {preset}

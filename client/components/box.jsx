@@ -20,7 +20,7 @@ const Box = props => {
       <TransportCtl 
         bpm={props.bpm}
         startStop={props.startStop}
-        adjustBpm={props.adjustBpm}
+        //adjustBpm={props.adjustBpm}
         viewPreset={props.viewPreset} 
         updatePreset={props.updatePreset} 
         loadUserPresets={props.loadUserPresets} 

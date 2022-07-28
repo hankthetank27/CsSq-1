@@ -29,7 +29,7 @@ class Machine extends Component {
             editNote={this.props.editNote}
             editSequence={this.props.editSequence}
             startStop={this.props.startStop}
-            adjustBpm={this.props.adjustBpm}
+            //adjustBpm={this.props.adjustBpm}
             viewPreset={this.props.viewPreset} 
             updatePreset={this.props.updatePreset} 
             loadUserPresets={this.props.loadUserPresets} 
