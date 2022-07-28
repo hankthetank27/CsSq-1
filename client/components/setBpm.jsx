@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Transport } from 'tone';
 
 
@@ -17,6 +17,8 @@ const adjustBpm = event => {
   Transport.bpm.value = bpmHandler;
   setBpm(bpmHandler);
 };
+
+//TODO: change BPM input field value when presets are loaded.
 
  return (
   <form className='bpmForm'>

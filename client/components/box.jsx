@@ -18,8 +18,8 @@ const Box = props => {
   return (
     <div className='machineContainer'>
       <TransportCtl 
-        bpm={props.bpm}
-        startStop={props.startStop}
+        //bpm={props.bpm}
+        //startStop={props.startStop}
         //adjustBpm={props.adjustBpm}
         viewPreset={props.viewPreset} 
         updatePreset={props.updatePreset} 

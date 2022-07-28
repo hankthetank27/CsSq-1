@@ -10,12 +10,14 @@ class TransportCtl extends Component {
     return (
       <div className='transport'>
         <SetBPM 
-          bpm={this.props.bpm} 
+          //bpm={this.props.bpm} 
           //adjustBpm={this.props.adjustBpm} 
-          handleChange={this.props.handleChange} 
+          //handleChange={this.props.handleChange} 
         />
         {preset}
-        <StartStop startStop={this.props.startStop}/>
+        <StartStop
+          //startStop={this.props.startStop}
+        />
       </div>
     )
   }
