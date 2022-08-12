@@ -49,9 +49,7 @@ class App extends Component {
   }
 
   componentDidMount () { 
-    this.setState({grid: this.makeGrid(this.state.notes)}, () => {
-      this.configLoop()
-    })
+    this.setState({grid: this.makeGrid(this.state.notes)}, this.configLoop)
     this.loadUserPresets();
   }
 
