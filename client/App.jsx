@@ -261,9 +261,9 @@ class App extends Component {
     })
   }
 
-  startStop (event) {
+  async startStop (event) {
     if (event) event.preventDefault();
-    Tone.start();
+    await Tone.start();
     const { isPlaying } = this.state;
     if (isPlaying){ 
       Tone.Transport.stop();
