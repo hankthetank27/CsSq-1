@@ -50,9 +50,7 @@ class App extends Component {
 
   componentDidMount () { 
     this.setState({grid: this.makeGrid(this.state.notes)}, () => {
-      Tone.start().then(() => {
-        this.configLoop();
-      })
+      this.configLoop()
     })
     this.loadUserPresets();
   }
@@ -267,6 +265,7 @@ class App extends Component {
 
   startStop (event) {
     if (event) event.preventDefault();
+    Tone.start();
     const { isPlaying } = this.state;
     if (isPlaying){ 
       Tone.Transport.stop();
