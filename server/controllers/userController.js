@@ -14,18 +14,25 @@ const createErr = (errInfo) => {
 const userController = {};
 
 userController.createNewUser = (req, res, next) => {
-  console.log('testPost req.body: ', req.body)
-  const newUser = Object.assign({}, req.body)
+  const newUser = Object.assign({}, req.body);
+  
+  if (newUser.password.length < 6) return res.status(400).send('password must be greater than 6 charaters');
+
   userModel.create(newUser)
     .then(newUser => {
       res.locals.userInfo = newUser;
       return next();
     })
-    .catch(err => next(createErr({
-      method: 'createNewUser',
-      type: 'when creating new user DB entry',
-      err: err
-    })));
+    .catch(err => {   
+      if (err.code === 11000) return res.status(400).json('username already exists');
+
+      return next(createErr({
+        method: 'createNewUser',
+        type: 'when creating new user DB entry',
+        err: err
+      }))
+
+    });
 };
 
 userController.verifyUser = (req, res, next) => {

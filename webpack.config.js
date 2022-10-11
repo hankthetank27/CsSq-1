@@ -46,5 +46,10 @@ module.exports = {
     proxy: {
       '/api': 'http://localhost:3000'
     }
+  },
+  performance: {
+    hints: false,
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000
   }
 };

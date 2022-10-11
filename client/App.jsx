@@ -105,10 +105,11 @@ class App extends Component {
   }
 
   async submitRegister (event) {
-    event.preventDefault()
+    event.preventDefault();
 
     const { username, pass } = this.state.register;
     const { bpm, beat, synthCount, notes, grid } = this.state;
+
     try {
       const res = await fetch('/api/', {
         method: 'post',
@@ -150,8 +151,6 @@ class App extends Component {
         viewPreset: true,
         currentUser: data.username
       }, () => {
-        console.log('current user preset data', data.preset)
-        console.log('state after loading user preset: ', this.state)
         return this.configLoop()
       });
     } catch (err) {
@@ -177,7 +176,6 @@ class App extends Component {
         }
       })
       const data = await res.json();
-      console.log('updateUserPrest respose: ', data);
     } catch (err) {
       console.log(err);
     }
@@ -222,9 +220,7 @@ class App extends Component {
         }
       });
       beat = (beat + 1) % 8;
-      this.setState({transportLocation: beat}, ()=> {
-        console.log('beat :', this.state.transportLocation)
-      })
+      this.setState({transportLocation: beat});
     };
 
     Tone.Transport.bpm.value = bpm;
@@ -250,15 +246,11 @@ class App extends Component {
     event.preventDefault();
     const { notes, grid } = this.state;
     notes[Number(event.target.id)] = event.target.value + '4';
-    console.log(notes)
 
     grid[Number(event.target.id)].forEach(obj => {
       obj.note = event.target.value + '4';
     })
-
-    this.setState({notes: notes, grid: grid}, () => {
-      console.log('setState on editNote:, ', this.state)
-    })
+    this.setState({notes: notes, grid: grid})
   }
 
   async startStop (event) {
@@ -289,7 +281,7 @@ class App extends Component {
 
   render () {
     const { incorrectLogin } = this.state.login;
-    const { userExists } = this.state.register;
+    const { pass } = this.state.register;
     const { viewPreset, bpm, notes, currentUser, grid, transportLocation } = this.state;
     return (
       <Routes>
@@ -319,7 +311,7 @@ class App extends Component {
         />}/>
 
         <Route exact path='/register' element={<Register
-          userExists={userExists}
+          pass={pass}
           handleChange={this.handleChange}
           submitRegister={this.submitRegister}
           loadUserPresets={this.loadUserPresets}

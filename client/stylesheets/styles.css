@@ -118,6 +118,10 @@ a:visited{
   color: rgba(44, 70, 70, 0.534);
 }
 
+.registerError{
+    color: rgba(44, 70, 70, 0.534);
+}
+
 .headerFiller {
   display: flex;
   align-items: center;
