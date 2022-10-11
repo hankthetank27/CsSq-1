@@ -92,7 +92,7 @@ userController.updatePreset = (req, res, next) => {
 
   const update = req.body;
 
-  userModel.findOneAndUpdate({username: res.locals.cookie}, {preset: update},
+  userModel.findOneAndUpdate({ _id: res.locals.cookie }, {preset: update},
      {new: true})
       .then(userInfo => {
 
@@ -102,7 +102,7 @@ userController.updatePreset = (req, res, next) => {
         };
 
         return next(createErr({
-          method: 'getUserInfo',
+          method: 'updatePreset',
           type: 'when getting user entry from DB',
           err: 'could not locate user in DB.'
         }));

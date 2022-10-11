@@ -174,8 +174,7 @@ class App extends Component {
         headers: {
           'Content-Type' : 'application/json; charset=UTF-8'
         }
-      })
-      const data = await res.json();
+      });
     } catch (err) {
       console.log(err);
     }
