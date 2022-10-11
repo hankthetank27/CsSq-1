@@ -13,47 +13,54 @@ const createErr = (errInfo) => {
 const sessionController = {};
 
 sessionController.setCookie = (req, res, next) => {
-  res.cookie('ssid', res.locals.userInfo.username, {
+
+  const { _id } = res.locals.userInfo;
+  const idString = String(_id);
+
+  res.cookie('ssid', idString, {
     secure: true,
     httpOnly: true
-  })
-  console.log('setCookie', res.locals.userInfo.username)
+  });
+
   return next();
 }
 
 sessionController.startSession = (req, res, next) => {
-  Session.findOne({ cookieId: res.locals.userInfo.username })
+
+  const { _id } = res.locals.userInfo;
+  const idString = String(_id);
+
+  Session.findOne({ cookieId: idString})
     .then(result => {
       if (!result) {
         Session.create({
-          cookieId: res.locals.userInfo.username,
+          cookieId: idString,
           createdAt: new Date(),
-        }).then((result) => {
-          console.log('created session: ', result)
-          if (result) return next();
-        });
+        })
+          .then((result) => {
+            if (result) return next();
+          });
       } else {
-        console.log('found session: ', result)
         return next();
-      }
+      };
     })
     .catch(err => next(createErr({
       method: 'startSession',
       type: 'when starting new session',
       err: err
-    })));
+    })
+  ));
 };
 
 sessionController.isLoggedIn = (req, res, next) => {
-  Session.findOne({ cookieId: req.cookies.ssid }).then((result) => {
+
+  Session.findOne({ cookieId: req.cookies.ssid })
+  .then(result => {
     if (result) {
       res.locals.cookie = result.cookieId;
-      console.log('sessionController.isLoggedIn: ', res.locals.cookie)
-      return next();
-    } 
-    else {
-      console.log('the cookie does not exist');
-      res.status(200).send('session not found');
+      return next();   
+    } else {
+      res.status(400).send('session not found');
     }
   })
   .catch(err => next(createErr({

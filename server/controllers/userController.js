@@ -14,8 +14,9 @@ const createErr = (errInfo) => {
 const userController = {};
 
 userController.createNewUser = (req, res, next) => {
+
   const newUser = Object.assign({}, req.body);
-  
+
   if (newUser.password.length < 6) return res.status(400).send('password must be greater than 6 charaters');
 
   userModel.create(newUser)
@@ -36,6 +37,7 @@ userController.createNewUser = (req, res, next) => {
 };
 
 userController.verifyUser = (req, res, next) => {
+
   const credentials = req.headers.authorization.split(' ');
   const username = credentials[0];
   const plPassword = credentials[1];
@@ -43,14 +45,16 @@ userController.verifyUser = (req, res, next) => {
   userModel.findOne({username: username})
     .then(userInfo => {
       if (userInfo && userInfo.username === username) {
+
         bcrypt.compare(plPassword, userInfo.password)
           .then(validPass => {
             if (!validPass) return next('password incorrect');
-            console.log('userController.verifyUser: ', userInfo)
             res.locals.userInfo = userInfo;
             return next();
           })
+
       } else {
+        
         return next(createErr({
           method: 'verifyUser',
           type: 'when getting user entry from DB',
@@ -66,38 +70,43 @@ userController.verifyUser = (req, res, next) => {
 }
 
 userController.getUserInfo = (req, res, next) => {
-  userModel.findOne({username: res.locals.cookie})
+
+  const { cookie } = res.locals;
+
+  userModel.findOne({ _id: cookie })
     .then(userInfo => {
       if (userInfo) {
-          console.log('userController.getUserInfo: ', userInfo)
           res.locals.userInfo = userInfo;
           return next();
-      }
+      };
+
       return next(createErr({
         method: 'getUserInfo',
         type: 'when getting user entry from DB',
         err: 'could not locate user in DB.'
       }));
-    })
-}
+    });
+};
 
 userController.updatePreset = (req, res, next) => {
-  console.log('userController.updatePreset, req.body: ', req.body)
-  const update = req.body
+
+  const update = req.body;
+
   userModel.findOneAndUpdate({username: res.locals.cookie}, {preset: update},
      {new: true})
       .then(userInfo => {
+
         if (userInfo) {
-            console.log('userController.updatePreset, user found and updated: ', userInfo)
-            res.locals.userInfo = userInfo;
-            return next();
-        }
+          res.locals.userInfo = userInfo;
+          return next();
+        };
+
         return next(createErr({
           method: 'getUserInfo',
           type: 'when getting user entry from DB',
           err: 'could not locate user in DB.'
         }));
-      })
-}
+    });
+};
 
 module.exports = userController;
