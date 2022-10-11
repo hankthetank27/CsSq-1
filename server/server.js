@@ -8,14 +8,15 @@ const app = express();
 const apiRouter = require('./routes/api');
 
 const PORT = 3000;
+const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/';
 
-//connect to local mongoDB (DONT FORGET TO SO START MONGO)
-mongoose.connect('mongodb://localhost:27017/',
-{
-  dbName: 'cdSoloProject',
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}, err => err ? console.log(err) : console.log('Connected to database'));
+//connect to mongoDB
+mongoose.connect(mongoURI, {
+    dbName: 'cssq1',
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }, err => err ? console.log(err) : console.log('Connected to database')
+);
 
 //handle parsing request body
 app.use(express.json());

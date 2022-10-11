@@ -2,7 +2,6 @@ const express = require('express');
 
 const userController = require('../controllers/userController');
 const sessionController = require('../controllers/sessionController');
-const { getUserInfo } = require('../controllers/userController');
 
 const router = express.Router();
 
