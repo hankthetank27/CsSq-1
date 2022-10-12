@@ -18,7 +18,7 @@ app.use(cookieParser());
 //uses /dist for static files in webpack production mode
 if (process.env.NODE_ENV === 'production'){
   app.use(express.static(path.resolve(__dirname, '../dist')));
-  mongo.uri = 'mongodb://mongo:27017/';
+  mongo.uri = process.env.MONGO_PORT;
 } else {
   mongo.uri = 'mongodb://localhost:27017/';
 };
