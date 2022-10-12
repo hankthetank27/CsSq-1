@@ -7,7 +7,7 @@ const app = express();
 
 const apiRouter = require('./routes/api');
 
-const PORT = 3000;
+const PORT = 8080;
 const mongo = {};
 
 //handle parsing request body

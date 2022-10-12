@@ -1,9 +1,9 @@
-version: "2"
+version: "3.0"
 services: 
-  metis:
+  cssq1:
     build: .
     ports:
-      - "3000:3000"
+      - "8080:8080"
     links:
       - mongo
 
