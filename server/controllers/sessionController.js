@@ -18,7 +18,6 @@ sessionController.setCookie = (req, res, next) => {
   const idString = String(_id);
 
   res.cookie('ssid', idString, {
-    secure: true,
     httpOnly: true
   });
 
