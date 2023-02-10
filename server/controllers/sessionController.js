@@ -17,7 +17,10 @@ sessionController.setCookie = (req, res, next) => {
   const { _id } = res.locals.userInfo;
   const idString = String(_id);
 
+
   res.cookie('ssid', idString, {
+    //need SSL
+    //secure: true,
     httpOnly: true
   });
 
